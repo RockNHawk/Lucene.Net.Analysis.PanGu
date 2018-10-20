@@ -20,106 +20,106 @@ namespace PanGu.Dict
             }
         }
 
-        private DateTime _MainDictLastTime;
-        private DateTime _ChsSingleLastTime;
-        private DateTime _ChsName1LastTime;
-        private DateTime _ChsName2LastTime;
-        private DateTime _StopWordLastTime;
-        private DateTime _SynonymLastTime;
-        private DateTime _WildcardLastTime;
+        //private DateTime _MainDictLastTime;
+        //private DateTime _ChsSingleLastTime;
+        //private DateTime _ChsName1LastTime;
+        //private DateTime _ChsName2LastTime;
+        //private DateTime _StopWordLastTime;
+        //private DateTime _SynonymLastTime;
+        //private DateTime _WildcardLastTime;
 
-        private DateTime GetLastTime(string fileName)
-        {
-            try
-            {
-                // The function will raise an exception when path not exist on Linux.
-                return System.IO.File.GetLastWriteTime(DictionaryDir + fileName);
-            }
-            catch
-            {
-                return default(DateTime);
-            }
-        }
+        //private DateTime GetLastTime(string fileName)
+        //{
+        //    try
+        //    {
+        //        // The function will raise an exception when path not exist on Linux.
+        //        return System.IO.File.GetLastWriteTime(DictionaryDir + fileName);
+        //    }
+        //    catch
+        //    {
+        //        return default(DateTime);
+        //    }
+        //}
 
         public DictionaryLoader(string dictDir)
         {
             _DictionaryDir = dictDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()) ?
                 dictDir : Framework.Path.AppendDivision(dictDir, System.IO.Path.DirectorySeparatorChar);
-            _MainDictLastTime = GetLastTime("Dict.dct");
-            _ChsSingleLastTime = GetLastTime(Dict.ChsName.ChsSingleNameFileName);
-            _ChsName1LastTime = GetLastTime(Dict.ChsName.ChsDoubleName1FileName);
-            _ChsName2LastTime = GetLastTime(Dict.ChsName.ChsDoubleName2FileName);
-            _StopWordLastTime = GetLastTime("Stopword.txt");
-            _SynonymLastTime = GetLastTime(Dict.Synonym.SynonymFileName);
-            _WildcardLastTime = GetLastTime(Dict.Wildcard.WildcardFileName);
+            //_MainDictLastTime = GetLastTime("Dict.dct");
+            //_ChsSingleLastTime = GetLastTime(Dict.ChsName.ChsSingleNameFileName);
+            //_ChsName1LastTime = GetLastTime(Dict.ChsName.ChsDoubleName1FileName);
+            //_ChsName2LastTime = GetLastTime(Dict.ChsName.ChsDoubleName2FileName);
+            //_StopWordLastTime = GetLastTime("Stopword.txt");
+            //_SynonymLastTime = GetLastTime(Dict.Synonym.SynonymFileName);
+            //_WildcardLastTime = GetLastTime(Dict.Wildcard.WildcardFileName);
 
-            Task.Factory.StartNew(MonitorDictionary);
+            //Task.Factory.StartNew(MonitorDictionary);
         }
 
-        private bool MainDictChanged()
-        {
-            try
-            {
-                return _MainDictLastTime != GetLastTime("Dict.dct");
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //private bool MainDictChanged()
+        //{
+        //    try
+        //    {
+        //        return _MainDictLastTime != GetLastTime("Dict.dct");
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        private bool ChsNameChanged()
-        {
-            try
-            {
-                return (_ChsSingleLastTime != GetLastTime(Dict.ChsName.ChsSingleNameFileName) ||
-                    _ChsName1LastTime != GetLastTime(Dict.ChsName.ChsDoubleName1FileName) ||
-                    _ChsName2LastTime != GetLastTime(Dict.ChsName.ChsDoubleName2FileName));
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //private bool ChsNameChanged()
+        //{
+        //    try
+        //    {
+        //        return (_ChsSingleLastTime != GetLastTime(Dict.ChsName.ChsSingleNameFileName) ||
+        //            _ChsName1LastTime != GetLastTime(Dict.ChsName.ChsDoubleName1FileName) ||
+        //            _ChsName2LastTime != GetLastTime(Dict.ChsName.ChsDoubleName2FileName));
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        private bool StopWordChanged()
-        {
-            try
-            {
-                return _StopWordLastTime != GetLastTime("Stopword.txt");
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //private bool StopWordChanged()
+        //{
+        //    try
+        //    {
+        //        return _StopWordLastTime != GetLastTime("Stopword.txt");
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        private bool SynonymChanged()
-        {
-            try
-            {
-                return _SynonymLastTime != GetLastTime(Dict.Synonym.SynonymFileName);
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //private bool SynonymChanged()
+        //{
+        //    try
+        //    {
+        //        return _SynonymLastTime != GetLastTime(Dict.Synonym.SynonymFileName);
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        private bool WildcardChanged()
-        {
-            try
-            {
-                return _WildcardLastTime != GetLastTime(Dict.Wildcard.WildcardFileName);
-            }
-            catch
-            {
-                return false;
-            }
+        //private bool WildcardChanged()
+        //{
+        //    try
+        //    {
+        //        return _WildcardLastTime != GetLastTime(Dict.Wildcard.WildcardFileName);
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
 
-        }
+        //}
 
-
+        /*
         private void MonitorDictionary()
         {
             while (true)
@@ -212,8 +212,11 @@ namespace PanGu.Dict
                 {
                 }
 
-
             }
-        }
+
+    }
+                */
+
+
     }
 }

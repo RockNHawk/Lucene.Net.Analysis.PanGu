@@ -27,28 +27,28 @@ namespace PanGu
 {
     public class Segment
     {
-    //    const string PATTERNS = @"[０-９\d]+\%|[０-９\d]{1,2}月|[０-９\d]{1,2}日|[０-９\d]{1,4}年|" +
-    //@"[０-９\d]{1,4}-[０-９\d]{1,2}-[０-９\d]{1,2}|" +
-    //@"\s+|" +
-    //@"[０-９\d]+|[^ａ-ｚＡ-Ｚa-zA-Z0-9０-９\u4e00-\u9fa5]|[ａ-ｚＡ-Ｚa-zA-Z]+|[\u4e00-\u9fa5]+";
+        //    const string PATTERNS = @"[０-９\d]+\%|[０-９\d]{1,2}月|[０-９\d]{1,2}日|[０-９\d]{1,4}年|" +
+        //@"[０-９\d]{1,4}-[０-９\d]{1,2}-[０-９\d]{1,2}|" +
+        //@"\s+|" +
+        //@"[０-９\d]+|[^ａ-ｚＡ-Ｚa-zA-Z0-9０-９\u4e00-\u9fa5]|[ａ-ｚＡ-Ｚa-zA-Z]+|[\u4e00-\u9fa5]+";
 
         const string PATTERNS = @"([０-９\d]+)|([ａ-ｚＡ-Ｚa-zA-Z_]+)";
 
         #region Private fields
 
-        static object _LockObj = new object();
-        static bool _Inited = false;
-        private static Dictionary<string, string> _InfinitiveVerbTable = null;
+        //object _LockObj = new object();
+        bool _Inited = false;
+        private Dictionary<string, string> _InfinitiveVerbTable = null;
 
-        internal static Dict.WordDictionary _WordDictionary = null;
-        internal static Dict.ChsName _ChsName = null;
-        internal static Dict.StopWord _StopWord = null;
-        internal static Dict.Synonym _Synonym = null;
-        internal static Dict.Wildcard _Wildcard = null;
+        internal Dict.WordDictionary _WordDictionary = null;
+        internal Dict.ChsName _ChsName = null;
+        internal Dict.StopWord _StopWord = null;
+        internal Dict.Synonym _Synonym = null;
+        internal Dict.Wildcard _Wildcard = null;
 
-        static Dict.DictionaryLoader _DictLoader;
-        private Match.MatchOptions _Options;
-        private Match.MatchParameter _Parameters;
+        Dict.DictionaryLoader _DictLoader;
+        //private Match.MatchOptions _Options;
+        //private Match.MatchParameter _Parameters;
         #endregion
 
 
@@ -105,7 +105,7 @@ namespace PanGu
 
         //}
 
-        private bool MergeEnglishSpecialWord(string orginalText, SuperLinkedList<WordInfo> wordInfoList, ref SuperLinkedListNode<WordInfo> current)
+        private bool MergeEnglishSpecialWord(string orginalText, SuperLinkedList<WordInfo> wordInfoList, ref SuperLinkedListNode<WordInfo> current, MatchOptions options, MatchParameter parameters)
         {
             SuperLinkedListNode<WordInfo> cur = current;
 
@@ -148,12 +148,12 @@ namespace PanGu
                 }
 
                 WordInfo newWordInfo = new WordInfo(new PanGu.Dict.PositionLength(first, last - first,
-                    wa), orginalText, _Parameters);
+                    wa), orginalText, parameters);
 
                 newWordInfo.WordType = WordType.English;
-                newWordInfo.Rank = _Parameters.EnglishRank;
+                newWordInfo.Rank = parameters.EnglishRank;
 
-                if (_Options.EnglishSegment)
+                if (options.EnglishSegment)
                 {
                     string lowerWord = newWordInfo.Word.ToLower();
 
@@ -169,10 +169,10 @@ namespace PanGu
                         }
                     }
 
-                    newWordInfo = new WordInfo(lowerWord, newWordInfo.Position, newWordInfo.Pos, newWordInfo.Frequency, _Parameters.EnglishLowerRank, newWordInfo.WordType,
+                    newWordInfo = new WordInfo(lowerWord, newWordInfo.Position, newWordInfo.Pos, newWordInfo.Frequency, parameters.EnglishLowerRank, newWordInfo.WordType,
                         newWordInfo.OriginalWordType);
                 }
-                else if (_Options.IgnoreCapital)
+                else if (options.IgnoreCapital)
                 {
                     newWordInfo.Word = newWordInfo.Word.ToLower();
                 }
@@ -325,7 +325,7 @@ namespace PanGu
 
         }
 
-        private SuperLinkedList<WordInfo> PreSegment(String text)
+        private SuperLinkedList<WordInfo> PreSegment(String text, MatchOptions options, MatchParameter parameters)
         {
             SuperLinkedList<WordInfo> result = GetInitSegment(text);
 
@@ -333,7 +333,7 @@ namespace PanGu
 
             while (cur != null)
             {
-                if (_Options.IgnoreSpace)
+                if (options.IgnoreSpace)
                 {
                     if (cur.Value.WordType == WordType.Space)
                     {
@@ -341,7 +341,7 @@ namespace PanGu
                         cur = cur.Next;
                         result.Remove(lst);
                         continue;
-                     }
+                    }
                 }
 
                 switch (cur.Value.WordType)
@@ -352,7 +352,7 @@ namespace PanGu
 
                         WordType originalWordType = WordType.SimplifiedChinese;
 
-                        if (_Options.TraditionalChineseEnabled)
+                        if (options.TraditionalChineseEnabled)
                         {
                             string simplified = Microsoft.VisualBasic.Strings.StrConv(cur.Value.Word, Microsoft.VisualBasic.VbStrConv.SimplifiedChinese, 0);
 
@@ -363,10 +363,10 @@ namespace PanGu
                             }
                         }
 
-                        var pls = _WordDictionary.GetAllMatchs(inputText, _Options.ChineseNameIdentify);
+                        var pls = _WordDictionary.GetAllMatchs(inputText, options.ChineseNameIdentify);
                         var chsMatch = new ChsFullTextMatch(_WordDictionary);
-                        chsMatch.Options = _Options;
-                        chsMatch.Parameters = _Parameters;
+                        chsMatch.Options = options;
+                        chsMatch.Parameters = parameters;
                         var chsMatchWords = chsMatch.Match(pls.Items, cur.Value.Word, pls.Count);
 
                         var curChsMatch = chsMatchWords.First;
@@ -378,9 +378,9 @@ namespace PanGu
                             wi.OriginalWordType = originalWordType;
                             wi.WordType = originalWordType;
 
-                            if (_Options.OutputSimplifiedTraditional)
+                            if (options.OutputSimplifiedTraditional)
                             {
-                                if (_Options.TraditionalChineseEnabled)
+                                if (options.TraditionalChineseEnabled)
                                 {
                                     string newWord;
                                     WordType wt;
@@ -404,7 +404,7 @@ namespace PanGu
                                         newWordInfo.Word = newWord;
                                         newWordInfo.OriginalWordType = originalWordType;
                                         newWordInfo.WordType = wt;
-                                        newWordInfo.Rank = _Parameters.SimplifiedTraditionalRank;
+                                        newWordInfo.Rank = parameters.SimplifiedTraditionalRank;
                                         newWordInfo.Position = wi.Position;
                                         chsMatchWords.AddBefore(curChsMatch, newWordInfo);
                                     }
@@ -420,18 +420,18 @@ namespace PanGu
                         result.Remove(removeItem);
                         break;
                     case WordType.English:
-                        cur.Value.Rank = _Parameters.EnglishRank;
-                        List<string> output;
+                        cur.Value.Rank = parameters.EnglishRank;
+                        //List<string> output;
                         cur.Value.Word = ConvertChineseCapitalToAsiic(cur.Value.Word);
 
-                        if (_Options.EnglishSegment)
+                        if (options.EnglishSegment)
                         {
                             string lower = cur.Value.Word.ToLower();
 
                             if (lower != cur.Value.Word)
                             {
                                 result.AddBefore(cur, new WordInfo(lower, cur.Value.Position, POS.POS_A_NX, 1,
-                                    _Parameters.EnglishLowerRank, WordType.English, WordType.English));
+                                    parameters.EnglishLowerRank, WordType.English, WordType.English));
                             }
 
                             string stem = GetStem(lower);
@@ -441,16 +441,16 @@ namespace PanGu
                                 if (lower != stem)
                                 {
                                     result.AddBefore(cur, new WordInfo(stem, cur.Value.Position, POS.POS_A_NX, 1,
-                                        _Parameters.EnglishStemRank, WordType.English, WordType.English));
+                                        parameters.EnglishStemRank, WordType.English, WordType.English));
                                 }
                             }
                         }
-                        else if (_Options.IgnoreCapital)
+                        else if (options.IgnoreCapital)
                         {
                             cur.Value.Word = cur.Value.Word.ToLower();
                         }
 
-                        if (_Options.EnglishMultiDimensionality)
+                        if (options.EnglishMultiDimensionality)
                         {
                             bool needSplit = false;
 
@@ -465,7 +465,8 @@ namespace PanGu
 
                             if (needSplit)
                             {
-                                if (Framework.Regex.GetMatchStrings(cur.Value.Word, PATTERNS, true, out output))
+                                List<string> output;
+                                if (Framework.Regex.GetMatchStrings(cur.Value.Word, PATTERNS, true, out output) && output != null)
                                 {
                                     int outputCount = 0;
 
@@ -500,7 +501,7 @@ namespace PanGu
                                             {
                                                 wi = new WordInfo(splitWord, POS.POS_A_M, 1);
                                                 wi.Position = position;
-                                                wi.Rank = _Parameters.NumericRank;
+                                                wi.Rank = parameters.NumericRank;
                                                 wi.OriginalWordType = WordType.English;
                                                 wi.WordType = WordType.Numeric;
                                             }
@@ -508,7 +509,7 @@ namespace PanGu
                                             {
                                                 wi = new WordInfo(splitWord, POS.POS_A_NX, 1);
                                                 wi.Position = position;
-                                                wi.Rank = _Parameters.EnglishRank;
+                                                wi.Rank = parameters.EnglishRank;
                                                 wi.OriginalWordType = WordType.English;
                                                 wi.WordType = WordType.English;
                                             }
@@ -521,7 +522,7 @@ namespace PanGu
                             }
                         }
 
-                        if (!MergeEnglishSpecialWord(text, result, ref cur))
+                        if (!MergeEnglishSpecialWord(text, result, ref cur, options, parameters))
                         {
                             cur = cur.Next;
                         }
@@ -529,9 +530,9 @@ namespace PanGu
                         break;
                     case WordType.Numeric:
                         cur.Value.Word = ConvertChineseCapitalToAsiic(cur.Value.Word);
-                        cur.Value.Rank = _Parameters.NumericRank;
+                        cur.Value.Rank = parameters.NumericRank;
 
-                        if (!MergeEnglishSpecialWord(text, result, ref cur))
+                        if (!MergeEnglishSpecialWord(text, result, ref cur, options, parameters))
                         {
                             cur = cur.Next;
                         }
@@ -539,7 +540,7 @@ namespace PanGu
                         //cur = cur.Next;
                         break;
                     case WordType.Symbol:
-                        cur.Value.Rank = _Parameters.SymbolRank;
+                        cur.Value.Rank = parameters.SymbolRank;
                         cur = cur.Next;
                         break;
                     default:
@@ -551,7 +552,7 @@ namespace PanGu
             return result;
         }
 
-        private void FilterStopWord(SuperLinkedList<WordInfo> wordInfoList)
+        void FilterStopWord(SuperLinkedList<WordInfo> wordInfoList, MatchOptions options, MatchParameter parameters)
         {
             if (wordInfoList == null)
             {
@@ -563,8 +564,8 @@ namespace PanGu
             while (cur != null)
             {
                 if (_StopWord.IsStopWord(cur.Value.Word,
-                    _Options.FilterEnglish, _Parameters.FilterEnglishLength,
-                    _Options.FilterNumeric, _Parameters.FilterNumericLength))
+                    options.FilterEnglish, parameters.FilterEnglishLength,
+                    options.FilterNumeric, parameters.FilterNumericLength))
                 {
                     SuperLinkedListNode<WordInfo> removeItem = cur;
                     cur = cur.Next;
@@ -577,10 +578,10 @@ namespace PanGu
             }
         }
 
-        private void ProcessAfterSegment(string orginalText, SuperLinkedList<WordInfo> result)
+        private void ProcessAfterSegment(string orginalText, SuperLinkedList<WordInfo> result, MatchOptions options, MatchParameter parameters)
         {
             //匹配同义词
-            if (_Options.SynonymOutput)
+            if (options.SynonymOutput)
             {
                 SuperLinkedListNode<WordInfo> node = result.First;
 
@@ -593,7 +594,7 @@ namespace PanGu
                         foreach (string word in synonyms)
                         {
                             node = result.AddAfter(node, new WordInfo(word, node.Value.Position,
-                                node.Value.Pos, node.Value.Frequency, _Parameters.SymbolRank,
+                                node.Value.Pos, node.Value.Frequency, parameters.SymbolRank,
                                 WordType.Synonym, node.Value.WordType));
                         }
                     }
@@ -603,7 +604,7 @@ namespace PanGu
             }
 
             //通配符匹配
-            if (_Options.WildcardOutput)
+            if (options.WildcardOutput)
             {
                 SuperLinkedListNode<WordInfo> node = result.First;
 
@@ -619,7 +620,7 @@ namespace PanGu
                             Dict.Wildcard.WildcardInfo wildcardInfo = wildcards[i];
 
                             int count = wildcardInfo.Segments.Count;
-                            if (!_Options.WildcardSegment)
+                            if (!options.WildcardSegment)
                             {
                                 count = 1;
                             }
@@ -633,7 +634,7 @@ namespace PanGu
                                     continue;
                                 }
 
-                                wi.Rank = _Parameters.WildcardRank;
+                                wi.Rank = parameters.WildcardRank;
                                 wi.Position += node.Value.Position;
                                 result.AddBefore(node, wi);
                             }
@@ -656,10 +657,10 @@ namespace PanGu
             }
 
             //用户自定义规则
-            if (_Options.CustomRule)
+            if (options.CustomRule)
             {
-                ICustomRule rule = CustomRule.GetCustomRule(_Parameters.CustomRuleAssemblyFileName,
-                    _Parameters.CustomRuleFullClassName);
+                ICustomRule rule = CustomRule.GetCustomRule(parameters.CustomRuleAssemblyFileName,
+                    parameters.CustomRuleFullClassName);
 
                 if (rule != null)
                 {
@@ -688,46 +689,38 @@ namespace PanGu
                 return new SuperLinkedList<WordInfo>();
             }
 
-//            try
-//            {
-//                Dict.DictionaryLoader.Lock.Enter(PanGu.Framework.Lock.Mode.Share);
-                _Options = options;
-                _Parameters = parameters;
+            //            try
+            //            {
+            //                Dict.DictionaryLoader.Lock.Enter(PanGu.Framework.Lock.Mode.Share);
 
-                Init();
+            Init();
 
-                if (_Options == null)
-                {
-                    _Options = Setting.PanGuSettings.Config.MatchOptions;
-                }
+            // It's not thread safe
+            var opts = options ?? Setting.PanGuSettings.Config.MatchOptions;
+            var pms = parameters ?? Setting.PanGuSettings.Config.Parameters;
 
-                if (_Parameters == null)
-                {
-                    _Parameters = Setting.PanGuSettings.Config.Parameters;
-                }
+            SuperLinkedList<WordInfo> result = PreSegment(text, opts, pms);
 
-                SuperLinkedList<WordInfo> result = PreSegment(text);
+            if (opts.FilterStopWords)
+            {
+                FilterStopWord(result, opts, pms);
+            }
 
-                if (_Options.FilterStopWords)
-                {
-                    FilterStopWord(result);
-                }
+            ProcessAfterSegment(text, result, opts, pms);
 
-                ProcessAfterSegment(text, result);
-
-                return result;
-//            }
-//            finally
-//            {
-//                Dict.DictionaryLoader.Lock.Leave();
-//            }
+            return result;
+            //            }
+            //            finally
+            //            {
+            //                Dict.DictionaryLoader.Lock.Leave();
+            //            }
         }
 
         #endregion
 
         #region Initialization
 
-        static private void LoadDictionary()
+        private void LoadDictionary()
         {
             _WordDictionary = new PanGu.Dict.WordDictionary();
             string dir = Setting.PanGuSettings.Config.GetDictionaryPath();
@@ -752,7 +745,7 @@ namespace PanGu
             _DictLoader = new PanGu.Dict.DictionaryLoader(Setting.PanGuSettings.Config.GetDictionaryPath());
         }
 
-        private static void InitInfinitiveVerbTable()
+        private void InitInfinitiveVerbTable()
         {
             if (_InfinitiveVerbTable != null)
             {
@@ -791,21 +784,22 @@ namespace PanGu
 
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        public static void Init()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Init()
         {
+            if (_Inited) return;
             Init(null);
         }
 
-        public static void Init(string fileName)
+        public void Init(string fileName)
         {
-            if (_Inited)  return;
-            lock (_LockObj)
+            if (_Inited) return;
+            //lock (_LockObj)
             {
-                if (_Inited)
-                {
-                    return;
-                }
+                //if (_Inited)
+                //{
+                //    return;
+                //}
 
                 InitInfinitiveVerbTable();
 

@@ -30,7 +30,7 @@ namespace PanGu.Framework
         {
             output = new List<string>();
 
-            output.Clear();
+            //output.Clear();
 
             System.Text.RegularExpressions.Regex reg;
 
