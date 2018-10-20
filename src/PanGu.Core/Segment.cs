@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using PanGu.Framework;
@@ -687,9 +688,9 @@ namespace PanGu
                 return new SuperLinkedList<WordInfo>();
             }
 
-            try
-            {
-                Dict.DictionaryLoader.Lock.Enter(PanGu.Framework.Lock.Mode.Share);
+//            try
+//            {
+//                Dict.DictionaryLoader.Lock.Enter(PanGu.Framework.Lock.Mode.Share);
                 _Options = options;
                 _Parameters = parameters;
 
@@ -715,11 +716,11 @@ namespace PanGu
                 ProcessAfterSegment(text, result);
 
                 return result;
-            }
-            finally
-            {
-                Dict.DictionaryLoader.Lock.Leave();
-            }
+//            }
+//            finally
+//            {
+//                Dict.DictionaryLoader.Lock.Leave();
+//            }
         }
 
         #endregion
@@ -790,7 +791,7 @@ namespace PanGu
 
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] 
         public static void Init()
         {
             Init(null);
@@ -798,6 +799,7 @@ namespace PanGu
 
         public static void Init(string fileName)
         {
+            if (_Inited)  return;
             lock (_LockObj)
             {
                 if (_Inited)

@@ -21,18 +21,37 @@ using System.Text;
 using System.Diagnostics;
 using System.Reflection;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace PanGu.Framework
 {
     public class Path
     {
+
+        private static string assemblyPathCache;
         static public string GetAssemblyPath()
         {
-            const string _PREFIX = @"file:///";
-            string codeBase = typeof(Path).GetTypeInfo().Assembly.CodeBase;
+            // this function will call three time
+            if (assemblyPathCache == null)
+            {
+                bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-            codeBase = codeBase.Substring(_PREFIX.Length, codeBase.Length - _PREFIX.Length).Replace("/", "\\");
-            return (System.IO.Path.GetDirectoryName(codeBase) + @"\").Replace('\\', System.IO.Path.DirectorySeparatorChar);
+                const string _PREFIX = @"file:///";
+                string codeBase = typeof(Path).GetTypeInfo().Assembly.CodeBase;
+
+                var dir = codeBase.Substring(_PREFIX.Length, codeBase.Length - _PREFIX.Length);
+                // if in Windows : file:///C:
+                // if in Unix Like system : file:///RootDirectory
+                if (isWindows == false)
+                {
+                    dir = System.IO.Path.DirectorySeparatorChar + dir;
+                }
+                assemblyPathCache= (System.IO.Path.GetDirectoryName(dir) + System.IO.Path.DirectorySeparatorChar);
+            }
+            return assemblyPathCache;
+            // this will broken on MacOS Or Unix Like system
+//            codeBase = codeBase.Substring(_PREFIX.Length, codeBase.Length - _PREFIX.Length).Replace("/", "\\");
+//            return (System.IO.Path.GetDirectoryName(codeBase) + @"\").Replace('\\', System.IO.Path.DirectorySeparatorChar);
         }
 
         static public string ProcessDirectory
