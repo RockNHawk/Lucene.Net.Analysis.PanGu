@@ -6,6 +6,7 @@ using System.Reflection;
 
 namespace PanGu.Match
 {
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
     [Serializable]
     public class MatchOptions
     {

@@ -330,7 +330,7 @@ namespace PanGu
             SuperLinkedList<WordInfo> result = GetInitSegment(text);
 
             SuperLinkedListNode<WordInfo> cur = result.First;
-
+            
             while (cur != null)
             {
                 if (options.IgnoreSpace)
@@ -487,6 +487,7 @@ namespace PanGu
                                     if (outputCount > 1)
                                     {
                                         int position = cur.Value.Position;
+                                        var cur2 = cur;
 
                                         foreach (string splitWord in output)
                                         {
@@ -514,7 +515,10 @@ namespace PanGu
                                                 wi.WordType = WordType.English;
                                             }
 
-                                            result.AddBefore(cur, wi);
+                                            // 以“ 可验证” 一词为例子，应被这样依次返回：可验证、验证，而不是：验证、可验证
+                                            // 所以，碰到可再分词的词时，先把当前的返回，而不是最后返回，因为由于切词的原因，Offset 在后的词应当在之后返回，
+                                            // result.AddBefore(cur, wi);
+                                            cur2 = result.AddAfter(cur2, wi);
                                             position += splitWord.Length;
                                         }
                                     }

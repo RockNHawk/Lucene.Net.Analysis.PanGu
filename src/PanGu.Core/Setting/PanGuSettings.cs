@@ -17,52 +17,47 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using PanGu.Framework;
 
 namespace PanGu.Setting
 {
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
     [Serializable, System.Xml.Serialization.XmlRoot(Namespace = "http://www.codeplex.com/pangusegment")]
     public class PanGuSettings
     {
         #region static members
+
         private static PanGuSettings _Config;
 
         public static PanGuSettings Config
         {
-            get
-            {
-                return _Config;
-            }
+            get { return _Config; }
         }
 
         static public void Load(string fileName)
         {
-            if (System.IO.File.Exists(fileName))
+            // if (!System.IO.File.Exists(fileName))
+            // {
+            // }
+            try
             {
-                try
+                using (var fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read))
                 {
-                    using (System.IO.FileStream fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open,
-                         System.IO.FileAccess.Read))
-                    {
-                        _Config = XmlSerialization<PanGuSettings>.Deserialize(fs);
-                    }
-                }
-                catch
-                {
-                    _Config = new PanGuSettings();
+                    _Config = XmlSerialization<PanGuSettings>.Deserialize(fs);
                 }
             }
-            else
+            catch
             {
-                _Config = new PanGuSettings();
+                throw;
             }
         }
 
         static public void Save(string fileName)
         {
             using (System.IO.FileStream fs = new System.IO.FileStream(fileName, System.IO.FileMode.Create,
-                 System.IO.FileAccess.ReadWrite))
+                       System.IO.FileAccess.ReadWrite))
             {
                 XmlSerialization<PanGuSettings>.Serialize(Config, Encoding.UTF8, fs);
             }
@@ -79,8 +74,7 @@ namespace PanGu.Setting
             path = System.IO.Path.GetFullPath(path);
             System.IO.Directory.SetCurrentDirectory(currentDir);
 
-            return path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()) ?
-                path: Path.AppendDivision(path, System.IO.Path.DirectorySeparatorChar);
+            return path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()) ? path : Path.AppendDivision(path, System.IO.Path.DirectorySeparatorChar);
         }
 
         #region Properties
@@ -89,45 +83,27 @@ namespace PanGu.Setting
 
         public string DictionaryPath
         {
-            get
-            {
-                return _DictionaryPath;
-            }
+            get { return _DictionaryPath; }
 
-            set
-            {
-                _DictionaryPath = value;
-            }
+            set { _DictionaryPath = value; }
         }
 
         private Match.MatchOptions _MatchOptions = new PanGu.Match.MatchOptions();
 
         public Match.MatchOptions MatchOptions
         {
-            get
-            {
-                return _MatchOptions;
-            }
+            get { return _MatchOptions; }
 
-            set
-            {
-                _MatchOptions = value;
-            }
+            set { _MatchOptions = value; }
         }
 
         private Match.MatchParameter _Parameters = new PanGu.Match.MatchParameter();
 
         public Match.MatchParameter Parameters
         {
-            get
-            {
-                return _Parameters;
-            }
+            get { return _Parameters; }
 
-            set
-            {
-                _Parameters = value;
-            }
+            set { _Parameters = value; }
         }
 
         #endregion
@@ -165,6 +141,5 @@ namespace PanGu.Setting
 
             return parameter;
         }
-
     }
 }

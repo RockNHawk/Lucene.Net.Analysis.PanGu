@@ -10,7 +10,7 @@ namespace PanGu
     /// </summary>
     public interface ICustomRule
     {
-        string Text {get; set;}
+        string Text { get; set; }
         void AfterSegment(SuperLinkedList<WordInfo> result);
     }
 
@@ -22,13 +22,13 @@ namespace PanGu
 
         internal static ICustomRule GetCustomRule(string assemblyFilePath, string classFullName)
         {
+            if (string.IsNullOrEmpty(assemblyFilePath) || string.IsNullOrEmpty(classFullName))
+            {
+                return null;
+            }
+
             lock (_LockObj)
             {
-                if (string.IsNullOrEmpty(assemblyFilePath) || string.IsNullOrEmpty(classFullName))
-                {
-                    return null;
-                }
-
                 Type type;
                 string key = assemblyFilePath.ToLower().Trim();
                 if (!_AsmFilePathDict.TryGetValue(key, out type))
