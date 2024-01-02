@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$PROJECT_DIR$" t="IncludeRecursive">
+      <e p="AnalyzerResource.Designer.cs" t="Include" />
+      <e p="AnalyzerResource.resx" t="Include" />
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="Dict" t="Include">
+        <e p="ChsName.cs" t="Include" />
+        <e p="DictionaryLoader.cs" t="Include" />
+        <e p="StopWord.cs" t="Include" />
+        <e p="Synonym.cs" t="Include" />
+        <e p="Wildcard.cs" t="Include" />
+        <e p="WordDictionary.cs" t="Include" />
+      </e>
+      <e p="Framework" t="Include">
+        <e p="AppendList.cs" t="Include" />
+        <e p="DFA.cs" t="Include" />
+        <e p="File.cs" t="Include" />
+        <e p="Instance.cs" t="Include" />
+        <e p="Lexical.cs" t="Include" />
+        <e p="Lock.cs" t="Include" />
+        <e p="Path.cs" t="Include" />
+        <e p="PorterStemmer.cs" t="Include" />
+        <e p="QuickSort.cs" t="Include" />
+        <e p="Regex.cs" t="Include" />
+        <e p="Stream.cs" t="Include" />
+        <e p="SuperLinkedList.cs" t="Include" />
+        <e p="XmlSerialization.cs" t="Include" />
+      </e>
+      <e p="ICustomRule.cs" t="Include" />
+      <e p="Match" t="Include">
+        <e p="ChsFullTextMatch.cs" t="Include" />
+        <e p="IChsFullTextMatch.cs" t="Include" />
+        <e p="MatchOptions.cs" t="Include" />
+        <e p="MatchParameter.cs" t="Include" />
+      </e>
+      <e p="Microsoft.VisualBasic" t="Include">
+        <e p="Strings.cs" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netstandard1.6" t="Include">
+            <e p="PanGu.Core.AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="PanGu.Core.csproj" t="IncludeRecursive" />
+      <e p="PanGu.Core.nuspec" t="Include" />
+      <e p="PanGu.Core.sln" t="IncludeFlat" />
+      <e p="POS.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="Segment.cs" t="Include" />
+      <e p="Setting" t="Include">
+        <e p="PanGuSettings.cs" t="Include" />
+        <e p="SettingLoader.cs" t="Include" />
+      </e>
+      <e p="WordAttribute.cs" t="Include" />
+      <e p="WordInfo.cs" t="Include" />
+    </e>
+    <e p="$USER_HOME$/Library/Caches/Rider2019.2/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/Rider2019.2/resharper-host/local/Transient/ReSharperHost/v192/SolutionCaches/_PanGu.Core.755724617.00" t="ExcludeRecursive" />
+  </component>
+</project>
