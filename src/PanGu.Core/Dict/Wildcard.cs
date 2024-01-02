@@ -45,7 +45,7 @@ namespace PanGu.Dict
 
         private void LoadWildcard(string fileName)
         {
-            lock (_LockObj)
+            //lock (_LockObj)
             {
                 _WildcardList = new List<WildcardInfo>();
 
@@ -55,7 +55,7 @@ namespace PanGu.Dict
                 }
 
                 Segment segment = new Segment();
-                using (var fileSteam = new FileStream(fileName, FileMode.Open))
+                using (var fileSteam = new FileStream(fileName, FileMode.Open, FileAccess.Read))
                 using (StreamReader sr = new StreamReader(fileSteam, Encoding.UTF8)) {
 
                     while (!sr.EndOfStream) {
@@ -86,10 +86,7 @@ namespace PanGu.Dict
         {
             get
             {
-                lock (_LockObj)
-                {
                     return _Init;
-                }
             }
         }
 
@@ -100,6 +97,7 @@ namespace PanGu.Dict
 
         private void Load()
         {
+            if (_Init) return;
             lock (_LockObj)
             {
                 if (!_Init)
@@ -112,7 +110,7 @@ namespace PanGu.Dict
 
         internal List<WildcardInfo> GetWildcards(string word)
         {
-            lock (_LockObj)
+            // lock (_LockObj)
             {
                 if (!_Init)
                 {
@@ -125,7 +123,7 @@ namespace PanGu.Dict
                 return null;
             }
 
-            lock (_LockObj)
+            //lock (_LockObj)
             {
                 word = word.ToLower().Trim();
 

@@ -127,7 +127,7 @@ namespace PanGu.Dict
         {
             WordDictionaryFile dictFile = new WordDictionaryFile();
             dictFile.Dicts = new List<WordAttribute>();
-            FileStream fileStream = new FileStream(fileName, FileMode.Open);
+            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fileStream, Encoding.UTF8))
             {
                 while (!sr.EndOfStream)

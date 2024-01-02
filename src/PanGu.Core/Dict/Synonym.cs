@@ -28,7 +28,7 @@ namespace PanGu.Dict
                 return;
             }
 
-            using (var fileSteam = new FileStream(fileName, FileMode.Open))
+            using (var fileSteam = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             using (StreamReader sr = new StreamReader(fileSteam, Encoding.UTF8)) {
 
                 while (!sr.EndOfStream) {

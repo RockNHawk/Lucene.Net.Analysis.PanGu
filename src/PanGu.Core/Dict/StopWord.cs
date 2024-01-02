@@ -74,7 +74,7 @@ namespace PanGu.Dict
             Stream stream = null;
             if (File.Exists(fileName))
             {
-                var fileStream = new FileStream(fileName, FileMode.Open);
+                var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                 sw = new StreamReader(fileStream, Encoding.UTF8);
             }
             else
