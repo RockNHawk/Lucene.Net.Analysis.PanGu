@@ -98,11 +98,11 @@ namespace PanGu.Dict
     /// </summary>
     public class WordDictionary
     {
-        Dictionary<string, WordAttribute> _WordDict = new Dictionary<string, WordAttribute>();
+        Dictionary<string, WordAttribute> _WordDict = new Dictionary<string, WordAttribute>(79276/*actual size */+ 10);
 
-        Dictionary<char, WordAttribute> _FirstCharDict = new Dictionary<char, WordAttribute>();
-        Dictionary<uint, WordAttribute> _DoubleCharDict = new Dictionary<uint, WordAttribute>();
-        Dictionary<long, byte[]> _TripleCharDict = new Dictionary<long, byte[]>();
+        Dictionary<char, WordAttribute> _FirstCharDict = new Dictionary<char, WordAttribute>(457 + 10);
+        Dictionary<uint, WordAttribute> _DoubleCharDict = new Dictionary<uint, WordAttribute>(66526 + 10);
+        Dictionary<long, byte[]> _TripleCharDict = new Dictionary<long, byte[]>(71874 + 10);
 
         internal Dict.ChsName ChineseName = null;
         private string _Version = "00";
@@ -466,11 +466,15 @@ namespace PanGu.Dict
         public void Load(String fileName, bool textFile, out string version)
         {
             version = "";
+            if (_WordDict.Count>0)
+            {
+                throw new InvalidOperationException("WordDictionary already loaded");
+            }
 
-            _WordDict = new Dictionary<string, WordAttribute>();
-            _FirstCharDict = new Dictionary<char, WordAttribute>();
-            _DoubleCharDict = new Dictionary<uint, WordAttribute>();
-            _TripleCharDict = new Dictionary<long, byte[]>();
+            //_WordDict = new Dictionary<string, WordAttribute>();
+            //_FirstCharDict = new Dictionary<char, WordAttribute>();
+            //_DoubleCharDict = new Dictionary<uint, WordAttribute>();
+            //_TripleCharDict = new Dictionary<long, byte[]>();
 
             List<WordAttribute> waList = null;
             if (textFile)
